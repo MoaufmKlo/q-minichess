@@ -19,7 +19,7 @@ while (!result().done) {
   logGame()
   await delay(1500)
 
-  for (let i = 0; i < 10; i += 1) {
+  for (let move = 0; move < 10; move += 1) {
     await randomMove(0)
     await randomMove(1)
   }
