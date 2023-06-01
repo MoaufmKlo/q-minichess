@@ -3,10 +3,10 @@ import { actions, reset, result, state, step } from './state.js'
 import { writeFile } from 'fs/promises'
 
 // hyperparameters
-const episodes = 25000
-const learningRate = 0.01
-const discountFactor = 0.2
-const exploration = 0.1
+const episodes = 10000
+const learningRate = 0.1
+const discountFactor = 0.3
+const exploration = 0.2
 
 const epochs = []
 const rewards = []
@@ -34,14 +34,14 @@ for (let episode = 0; episode < episodes; episode += 1) {
     ensureMatrix()
     const highestQ = () => matrix[JSON.stringify(state)].indexOf(Math.max(...matrix[JSON.stringify(state)]))
 
-    // explore (random action) or take highest learned Q
+    // explore (random action) or exploit (take highest learned Q)
     let action
     if (Math.random() < exploration) action = Math.round(Math.random() * actions - 1)
     else action = highestQ()
 
     let reward = step(action).reward
     const done = result()
-    if (done.winner === 1) reward -= 3 // penalty if game was lost
+    if (done.winner === 1) reward -= 6 // penalty if game was lost
     else if (done.winner === 0) reward += 6
 
     const currentQ = matrix[JSON.stringify(currentState)][action]

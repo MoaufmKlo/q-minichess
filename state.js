@@ -112,9 +112,9 @@ export function result () {
 export function step (action) {
   const done = move(action % 3, 0, Math.floor(action / 3)).done // see states below for action documentation
 
-  // neutral reward if opponent piece was hit,
-  // otherwise penalty for movement
-  const reward = action % 3 !== 1 && done ? 0 : -1
+  // neutral reward if opponent piece was hit, low penalty for
+  // a correct move and higher penalty for an impossible move
+  const reward = done ? (action % 3 !== 1 && done ? 0 : -1) : -2
 
   // move random opponent randomly unless game is done
   // or unless action above wasn't done (invalid action, penalized)
