@@ -36,7 +36,7 @@ for (let episode = 0; episode < episodes; episode += 1) {
 
     // explore (random action) or take highest learned Q
     let action
-    if (Math.random() < exploration) action = Math.round(Math.random() * actions)
+    if (Math.random() < exploration) action = Math.round(Math.random() * actions - 1)
     else action = highestQ()
 
     let reward = step(action).reward
