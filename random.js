@@ -2,7 +2,6 @@ import { move, result, reset } from './state.js'
 import { logGame } from './log.js'
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
-
 async function randomMove (owner) {
   while (true) if (move(Math.round(Math.random() * 2), owner, Math.round(Math.random() * 2)).done) break
   logGame()
