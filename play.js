@@ -1,17 +1,17 @@
 import readline from 'readline'
 import matrix from './matrix.json' assert { type: 'json' }
-import { move, reset, result, state } from './state.js'
+import { actions, move, reset, result, state } from './state.js'
 import { logGame } from './log.js'
 
 // try ideal moves until a possible one is found
 function moveOpponent () {
-  const actions = matrix[JSON.stringify(state)].filter((action) => !!action)
+  const matrixActions = (matrix[JSON.stringify(state)] || Array.from({ length: actions }, () => 0))
 
   let done = false
   while (!done) {
-    const action = actions.indexOf(Math.max(...actions))
+    const action = matrixActions.indexOf(Math.max(...matrixActions))
     done = move(action % 3, 0, Math.floor(action / 3)).done // see state for action documentation
-    actions[action] = -Infinity
+    matrixActions[action] = -Infinity
   }
 }
 
