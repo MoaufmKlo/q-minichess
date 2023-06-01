@@ -92,12 +92,12 @@ export function result () {
 
   // scenario: no more possible actions
   // try every move from next mover (1 - lastOwner: flips)
-  const oldState = JSON.parse(JSON.stringify(state))
+  const currentState = JSON.parse(JSON.stringify(state))
   let possible = false
   for (let action = 0; action < 3; action += 1) {
     for (let piece = 0; piece < 3; piece += 1) {
       if (move(action, 1 - lastOwner, piece).done) possible = true
-      state = JSON.parse(JSON.stringify(oldState)) // reset state
+      state = JSON.parse(JSON.stringify(currentState)) // reset state
     }
   }
   if (!possible) winner = lastOwner
@@ -108,6 +108,22 @@ export function result () {
   }
 }
 
+// do a timestep with reward
+export function step (action) {
+  const done = move(action % 3, 0, Math.floor(action / 3)).done // see states below for action documentation
+
+  // neutral reward if opponent piece was hit,
+  // otherwise penalty for movement
+  const reward = action % 3 !== 1 && done ? 0 : -1
+
+  // move random opponent randomly unless game is done
+  // or unless action above wasn't done (invalid action, penalized)
+  if (result().done) return { reward }
+  while (done) if (move(Math.round(Math.random() * 2), 1, Math.round(Math.random() * 2)).done) break
+
+  return { reward }
+}
+
 // static state variables
 export const actions = 3 * 3 // 3 actions (see move function) per piece
 
@@ -116,9 +132,9 @@ export const actions = 3 * 3 // 3 actions (see move function) per piece
 export const states = (() => {
   const possible = []
 
-  function moves (oldState, oldOwner) {
+  function moves (currentState, currentOwner) {
     for (let action = 0; action < actions; action += 1) {
-      state = JSON.parse(JSON.stringify(oldState))
+      state = JSON.parse(JSON.stringify(currentState))
       if (!possible.map((possibleState) => JSON.stringify(possibleState)).includes(JSON.stringify(state))) possible.push(state)
 
       /**
@@ -129,9 +145,9 @@ export const states = (() => {
        * 4 forward, "
        * ...
        */
-      const { done } = move(action % 3, oldOwner, Math.floor(action / 3))
+      const { done } = move(action % 3, currentOwner, Math.floor(action / 3))
       if (!done) continue
-      if (!result().done) moves(state, 1 - oldOwner)
+      if (!result().done) moves(state, 1 - currentOwner)
     }
   }
 
