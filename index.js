@@ -1,12 +1,12 @@
 import { log } from './log.js'
-import { actions, reset, result, state, step } from './state.js'
+import { actions, move, reset, result, state, step } from './state.js'
 import { writeFile } from 'fs/promises'
 
 // hyperparameters
-const episodes = 5000
+const episodes = 1000000
 const learningRate = 0.1
-const discountFactor = 0.4
-const exploration = 0.2
+const discountFactor = 0.6
+const exploration = 0.05
 
 const epochs = []
 const rewards = []
@@ -27,6 +27,8 @@ for (let episode = 0; episode < episodes; episode += 1) {
   }
 
   while (!result().done) {
+    while (true) if (move(Math.round(Math.random() * 2), 0, Math.round(Math.random() * 2)).done) break
+
     const currentState = JSON.parse(JSON.stringify(state))
 
     const ensureMatrix = () => matrix[JSON.stringify(state)] = matrix[JSON.stringify(state)] ? matrix[JSON.stringify(state)] : Array.from({ length: actions }, () => 0)
@@ -41,8 +43,8 @@ for (let episode = 0; episode < episodes; episode += 1) {
 
     let reward = step(action).reward
     const done = result()
-    if (done.winner === 1) reward -= 6 // penalty if game was lost
-    else if (done.winner === 0) reward += 6
+    if (done.winner === 0) reward -= 18 // penalty if game was lost
+    else if (done.winner === 1) reward += 6
 
     const currentQ = matrix[JSON.stringify(currentState)][action]
     ensureMatrix()

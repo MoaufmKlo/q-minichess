@@ -110,16 +110,13 @@ export function result () {
 
 // do a timestep with reward
 export function step (action) {
-  const done = move(action % 3, 0, Math.floor(action / 3)).done // see states below for action documentation
+  // move random opponent randomly unless game is done
+  // or unless action above wasn't done (invalid action, penalized)
+  const done = move(action % 3, 1, Math.floor(action / 3)).done // see states below for action documentation
 
   // neutral reward if opponent piece was hit, low penalty for
   // a correct move and higher penalty for an impossible move
   const reward = done ? (action % 3 !== 1 && done ? 0 : -1) : -2
-
-  // move random opponent randomly unless game is done
-  // or unless action above wasn't done (invalid action, penalized)
-  if (result().done) return { reward }
-  while (done) if (move(Math.round(Math.random() * 2), 1, Math.round(Math.random() * 2)).done) break
 
   return { reward }
 }

@@ -10,7 +10,7 @@ function moveOpponent () {
   let done = false
   while (!done) {
     const action = matrixActions.indexOf(Math.max(...matrixActions))
-    done = move(action % 3, 0, Math.floor(action / 3)).done // see state for action documentation
+    done = move(action % 3, 1, Math.floor(action / 3)).done // see state for action documentation
     matrixActions[action] = -Infinity
   }
 }
@@ -24,16 +24,13 @@ process.stdin.on('keypress', async (_, key) => {
   if (key.name === 'r') {
     reset()
     logGame()
-    await delay(1500)
-    moveOpponent()
-    logGame()
   } else if (!isNaN(key.name)) {
     const action = Number(key.name)
-    const done = move(action % 3, 1, Math.floor(action / 3)).done // see state for action documentation
+    const done = move(action % 3, 0, Math.floor(action / 3)).done // see state for action documentation
     logGame()
 
     // check if game is done
-    if (result().done) {
+    if (result().winner === 0) {
       await delay(1500)
       console.log(`You won (winner: ${result().winner})!\nPress r to reset.`)
       return
@@ -46,7 +43,7 @@ process.stdin.on('keypress', async (_, key) => {
       logGame()
 
       // check if game is done
-      if (result().done) {
+      if (result().winner === 1) {
         await delay(1500)
         console.log(`You lost (winner: ${result().winner})!\nPress r to reset.`)
       }
