@@ -126,33 +126,3 @@ export function step (action) {
 
 // static state variables
 export const actions = 3 * 3 // 3 actions (see move function) per piece
-
-// find all possible states by looping through states by
-// doing all moves at a state and repeating with the new states
-export const states = (() => {
-  const possible = []
-
-  function moves (currentState, currentOwner) {
-    for (let action = 0; action < actions; action += 1) {
-      state = JSON.parse(JSON.stringify(currentState))
-      if (!possible.map((possibleState) => JSON.stringify(possibleState)).includes(JSON.stringify(state))) possible.push(state)
-
-      /**
-       * 0: left hit, 1st piece
-       * 1 forward, "
-       * 2 right hit, "
-       * 3 left hit, 2nd piece
-       * 4 forward, "
-       * ...
-       */
-      const { done } = move(action % 3, currentOwner, Math.floor(action / 3))
-      if (!done) continue
-      if (!result().done) moves(state, 1 - currentOwner)
-    }
-  }
-
-  reset()
-  moves(state, 0)
-
-  return possible
-})()
