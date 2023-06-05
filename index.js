@@ -3,9 +3,9 @@ import { actions, reset, result, state, step } from './state.js'
 import { writeFile } from 'fs/promises'
 
 // hyperparameters
-const episodes = 10000
+const episodes = 5000
 const learningRate = 0.1
-const discountFactor = 0.3
+const discountFactor = 0.4
 const exploration = 0.2
 
 const epochs = []
@@ -57,7 +57,7 @@ for (let episode = 0; episode < episodes; episode += 1) {
 
   epochs.push(stats.epochs)
   rewards.push(stats.reward)
-  if (episode % 5 === 0) {
+  if (episode % 100 === 0) {
     log({
       episode,
       episodes,
